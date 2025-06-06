@@ -1,0 +1,240 @@
+<header class="header" id="shopify-section-header">
+  <div class="header-content">
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-button md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Toggle mobile menu">
+      <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <!-- Logo -->
+    <div class="logo-wrapper">
+      <a href="/" class="logo">
+        {% if section.settings.logo %}
+          <img src="{{ section.settings.logo | img_url: '200x' }}" 
+               alt="{{ shop.name }}" 
+               class="h-8 w-auto"
+               style="max-width: {{ section.settings.logo_max_width }}px;">
+        {% else %}
+          {{ shop.name }}
+        {% endif %}
+      </a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:block">
+      <ul class="nav-menu">
+        {% for link in linklists.main-menu.links %}
+          <li>
+            {% if link.links != blank %}
+              <!-- Dropdown Menu -->
+              <div class="relative group">
+                <button class="nav-link flex items-center space-x-1 hover:text-brand-green transition-colors">
+                  <span>{{ link.title }}</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                
+                <div class="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  {% for childlink in link.links %}
+                    <a href="{{ childlink.url }}" 
+                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-brand-green first:rounded-t-lg last:rounded-b-lg">
+                      {{ childlink.title }}
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% else %}
+              <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="flex items-center space-x-3">
+      <!-- Search Button -->
+      <button id="search-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Search">
+        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </button>
+
+      <!-- Theme Toggle -->
+      <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Toggle theme">
+        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+      </button>
+
+      <!-- Account -->
+      <a href="/account" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Account">
+        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        </svg>
+      </a>
+
+      <!-- Cart -->
+      <a href="/cart" class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Shopping cart">
+        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6.5M7 13h10"></path>
+        </svg>
+        {% if cart.item_count > 0 %}
+          <span class="cart-count absolute -top-1 -right-1 bg-brand-green text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+            {{ cart.item_count }}
+          </span>
+        {% endif %}
+      </a>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu md:hidden hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+    <div class="px-4 py-4 space-y-2">
+      {% for link in linklists.main-menu.links %}
+        {% if link.links != blank %}
+          <div class="mobile-dropdown">
+            <button class="mobile-dropdown-toggle w-full text-left py-2 font-medium text-gray-700 dark:text-gray-300 flex items-center justify-between">
+              {{ link.title }}
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="mobile-dropdown-content hidden pl-4 mt-2 space-y-2">
+              {% for childlink in link.links %}
+                <a href="{{ childlink.url }}" class="block py-1 text-gray-600 dark:text-gray-400 hover:text-brand-green">
+                  {{ childlink.title }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% else %}
+          <a href="{{ link.url }}" class="block py-2 font-medium text-gray-700 dark:text-gray-300 hover:text-brand-green">
+            {{ link.title }}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Search Overlay -->
+  <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="max-w-2xl mx-auto mt-20 px-4">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Search Products</h3>
+            <button id="search-close" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <input type="text" 
+                 placeholder="Search for products..." 
+                 class="search-input w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-green focus:border-brand-green dark:bg-gray-700 dark:text-white"
+                 autocomplete="off">
+          
+          <div class="search-results mt-4 max-h-96 overflow-y-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Mobile menu toggle
+  const mobileMenuButton = document.querySelector('.mobile-menu-button');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+      this.classList.toggle('active');
+    });
+  }
+
+  // Mobile dropdown toggles
+  const mobileDropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
+  mobileDropdownToggles.forEach(toggle => {
+    toggle.addEventListener('click', function() {
+      const content = this.nextElementSibling;
+      const icon = this.querySelector('svg');
+      
+      content.classList.toggle('hidden');
+      icon.classList.toggle('rotate-180');
+    });
+  });
+
+  // Search overlay
+  const searchToggle = document.getElementById('search-toggle');
+  const searchOverlay = document.getElementById('search-overlay');
+  const searchClose = document.getElementById('search-close');
+  const searchInput = document.querySelector('.search-input');
+  
+  if (searchToggle && searchOverlay) {
+    searchToggle.addEventListener('click', function() {
+      searchOverlay.classList.remove('hidden');
+      setTimeout(() => searchInput?.focus(), 100);
+    });
+  }
+  
+  if (searchClose && searchOverlay) {
+    searchClose.addEventListener('click', function() {
+      searchOverlay.classList.add('hidden');
+    });
+  }
+  
+  // Close search on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && searchOverlay && !searchOverlay.classList.contains('hidden')) {
+      searchOverlay.classList.add('hidden');
+    }
+  });
+  
+  // Close search on backdrop click
+  if (searchOverlay) {
+    searchOverlay.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.add('hidden');
+      }
+    });
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width",
+      "default": 150
+    },
+    {
+      "type": "link_list",
+      "id": "main_menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}
