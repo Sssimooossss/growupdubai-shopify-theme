@@ -1,84 +1,262 @@
 <!doctype html>
-<html class="{{ 'theme-' | append: settings.theme_style }}">
-<head>
-  <title>{{ page_title }}{% if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags.join(', ') }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}</title>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#2ECC71">
+    <link rel="canonical" href="{{ canonical_url }}">
 
-  {% if page_description %}
-    <meta name="description" content="{{ page_description | escape }}">
-  {% endif %}
+    <title>
+      {{ page_title }}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
 
-  <link rel="canonical" href="{{ canonical_url }}">
+    {{ content_for_header }}
 
-  <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-
-  {{ content_for_header }}
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            'brand-green': '#2ECC71',
-            'brand-dark': '#27AE60'
-          }
-        }
+    {% style %}
+      :root {
+        --color-primary: #2ECC71;
+        --color-secondary: #27AE60;
+        --color-dark-bg: #2F3137;
+        --color-dark-secondary: #1A1C1F;
+        --color-light-bg: #F9FAFB;
+        --color-light-secondary: #FFFFFF;
       }
-    }
-  </script>
 
-  {{ 'application.css' | asset_url | stylesheet_tag }}
-  
-  <script src="{{ 'application.js' | asset_url }}" defer="defer"></script>
-</head>
+      /* EXACT GrowUp Dubai Styles */
+      * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-  <a class="skip-to-content-link button visually-hidden" href="#MainContent">
-    {{ "accessibility.skip_to_text" | t }}
-  </a>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: var(--color-dark-bg);
+        color: white;
+        transition: all 0.3s ease;
+        line-height: 1.6;
+      }
 
-  {% sections 'header-group' %}
+      body.light-mode {
+        background-color: var(--color-light-bg);
+        color: #111827;
+      }
 
-  <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
-    {{ content_for_layout }}
-  </main>
+      /* Header exactly like original */
+      .header {
+        background-color: var(--color-dark-secondary);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
 
-  {% sections 'footer-group' %}
+      body.light-mode .header {
+        background-color: var(--color-light-secondary);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
 
-  <ul hidden>
-    <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
-    <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
-  </ul>
+      .header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 80px;
+      }
 
-  <script>
-    window.shopUrl = '{{ request.origin }}';
-    window.routes = {
-      cart_add_url: '{{ routes.cart_add_url }}',
-      cart_change_url: '{{ routes.cart_change_url }}',
-      cart_update_url: '{{ routes.cart_update_url }}',
-      cart_url: '{{ routes.cart_url }}',
-      predictive_search_url: '{{ routes.predictive_search_url }}'
-    };
+      .logo img {
+        height: 64px;
+        filter: invert(0);
+        transition: filter 0.3s ease;
+      }
 
-    window.cartStrings = {
-      error: `{{ 'sections.cart.cart_error' | t }}`,
-      quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
-    }
+      body.light-mode .logo img {
+        filter: invert(1);
+      }
 
-    window.variantStrings = {
-      addToCart: `{{ 'products.product.add_to_cart' | t }}`,
-      soldOut: `{{ 'products.product.sold_out' | t }}`,
-      unavailable: `{{ 'products.product.unavailable' | t }}`,
-      unavailable_with_option: `{{ 'products.product.value_unavailable' | t: option_value: '[value]' }}`,
-    }
+      .nav {
+        display: flex;
+        gap: 2rem;
+      }
 
-    window.accessibilityStrings = {
-      imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
-      shareSuccess: `{{ 'general.share.success_message' | t }}`,
-      pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
-      playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`,
-    }
-  </script>
-</body>
+      .nav-item {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      body.light-mode .nav-item {
+        color: #111827;
+      }
+
+      .nav-item:hover {
+        color: var(--color-primary);
+      }
+
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .control-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        text-decoration: none;
+      }
+
+      body.light-mode .control-btn {
+        background: rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        color: #111827;
+      }
+
+      .cart-count {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--color-primary);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      /* Main content */
+      main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      /* Hero section */
+      .hero {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+      }
+
+      .hero-subtitle {
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 0.5rem;
+      }
+
+      body.light-mode .hero-subtitle {
+        color: rgba(17, 24, 39, 0.7);
+      }
+
+      /* Product grid */
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+      }
+
+      .product-card {
+        background: linear-gradient(135deg, rgba(30, 31, 34, 1), rgba(26, 27, 30, 1));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      body.light-mode .product-card {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(46, 204, 113, 0.2);
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--color-dark-secondary);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 4rem;
+        padding: 3rem 0;
+      }
+
+      body.light-mode .footer {
+        background-color: var(--color-light-secondary);
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .nav { display: none; }
+        .header-inner { height: 70px; padding: 0 1rem; }
+      }
+    {% endstyle %}
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <a href="{{ routes.root_url }}">
+            <img src="https://i.postimg.cc/VLpdwcdC/logo-white.png" alt="{{ shop.name }}" />
+          </a>
+        </div>
+
+        <nav class="nav">
+          <a href="{{ routes.root_url }}" class="nav-item">Instagram</a>
+          <a href="{{ routes.collections_url }}" class="nav-item">TikTok</a>
+          <a href="/pages/contact" class="nav-item">YouTube</a>
+        </nav>
+
+        <div class="header-controls">
+          <button class="control-btn" onclick="toggleTheme()">
+            <span id="theme-icon">🌙</span>
+          </button>
+
+          <a href="{{ routes.cart_url }}" class="control-btn" style="position: relative;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m1 1 4 4 2.5 13h13l3-7H6"></path>
+            </svg>
+            <span class="cart-count">{{ cart.item_count }}</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="MainContent">
+      {{ content_for_layout }}
+    </main>
+
+    <script>
+      function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const icon = document.getElementById('theme-icon');
+        icon.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+      }
+    </script>
+  </body>
 </html>
