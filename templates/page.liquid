@@ -1,0 +1,186 @@
+---
+layout: theme
+---
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <article class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+    <!-- Page Header -->
+    <div class="px-8 py-6 border-b border-gray-200 dark:border-gray-700">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ page.title }}</h1>
+      {% if page.created_at %}
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          Published on {{ page.created_at | date: '%B %d, %Y' }}
+        </p>
+      {% endif %}
+    </div>
+
+    <!-- Page Content -->
+    <div class="px-8 py-6">
+      <div class="prose prose-lg max-w-none dark:prose-dark">
+        {{ page.content }}
+      </div>
+    </div>
+
+    {% if page.handle == 'contact' %}
+      <!-- Contact Form (if this is the contact page) -->
+      <div class="px-8 py-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Get in Touch</h2>
+        
+        {% form 'contact' %}
+          {% if form.posted_successfully? %}
+            <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+              <p class="font-semibold">Thank you!</p>
+              <p>Your message has been sent successfully. We'll get back to you soon.</p>
+            </div>
+          {% endif %}
+
+          {% if form.errors %}
+            <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              <p class="font-semibold">Please correct the following errors:</p>
+              <ul class="list-disc list-inside mt-2">
+                {% for field in form.errors %}
+                  <li>{{ field | capitalize }} {{ form.errors.messages[field] }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label for="ContactFormName" class="form-label">Name *</label>
+              <input type="text" 
+                     id="ContactFormName" 
+                     name="contact[name]" 
+                     value="{% if form.name %}{{ form.name }}{% endif %}"
+                     class="form-input"
+                     required>
+            </div>
+            
+            <div>
+              <label for="ContactFormEmail" class="form-label">Email *</label>
+              <input type="email" 
+                     id="ContactFormEmail" 
+                     name="contact[email]" 
+                     value="{% if form.email %}{{ form.email }}{% endif %}"
+                     class="form-input"
+                     required>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label for="ContactFormPhone" class="form-label">Phone</label>
+            <input type="tel" 
+                   id="ContactFormPhone" 
+                   name="contact[phone]" 
+                   value="{% if form.phone %}{{ form.phone }}{% endif %}"
+                   class="form-input">
+          </div>
+
+          <div class="mb-6">
+            <label for="ContactFormSubject" class="form-label">Subject *</label>
+            <input type="text" 
+                   id="ContactFormSubject" 
+                   name="contact[subject]" 
+                   value="{% if form.subject %}{{ form.subject }}{% endif %}"
+                   class="form-input"
+                   required>
+          </div>
+
+          <div class="mb-6">
+            <label for="ContactFormMessage" class="form-label">Message *</label>
+            <textarea id="ContactFormMessage" 
+                      name="contact[body]" 
+                      rows="6" 
+                      class="form-input"
+                      required>{% if form.body %}{{ form.body }}{% endif %}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg">
+            Send Message
+          </button>
+        {% endform %}
+      </div>
+    {% endif %}
+
+    {% if page.handle == 'faq' %}
+      <!-- FAQ Accordion (if this is the FAQ page) -->
+      <div class="px-8 py-6 border-t border-gray-200 dark:border-gray-700">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions</h2>
+        
+        <div class="space-y-4">
+          <div class="faq-item border border-gray-200 dark:border-gray-700 rounded-lg">
+            <button class="faq-question w-full text-left px-6 py-4 font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none">
+              Are the followers real Arab users?
+              <span class="faq-icon float-right">+</span>
+            </button>
+            <div class="faq-answer hidden px-6 py-4 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">
+              Yes, our followers come from real Arab profiles, carefully selected to match your target audience. This is especially useful for businesses or creators based in Dubai or the GCC region.
+            </div>
+          </div>
+
+          <div class="faq-item border border-gray-200 dark:border-gray-700 rounded-lg">
+            <button class="faq-question w-full text-left px-6 py-4 font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none">
+              How fast will I receive my followers?
+              <span class="faq-icon float-right">+</span>
+            </button>
+            <div class="faq-answer hidden px-6 py-4 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">
+              Most orders start within minutes after payment. We've built a fast and automated system supported by our 24/7 team to ensure your delivery is smooth and quick.
+            </div>
+          </div>
+
+          <div class="faq-item border border-gray-200 dark:border-gray-700 rounded-lg">
+            <button class="faq-question w-full text-left px-6 py-4 font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none">
+              Is it safe for my Instagram account?
+              <span class="faq-icon float-right">+</span>
+            </button>
+            <div class="faq-answer hidden px-6 py-4 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">
+              Absolutely. We use tested methods that are safe and within the guidelines of social platforms. Our team monitors everything closely to make sure your account stays secure.
+            </div>
+          </div>
+
+          <div class="faq-item border border-gray-200 dark:border-gray-700 rounded-lg">
+            <button class="faq-question w-full text-left px-6 py-4 font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none">
+              Do you offer refunds?
+              <span class="faq-icon float-right">+</span>
+            </button>
+            <div class="faq-answer hidden px-6 py-4 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">
+              Yes, we offer refunds if the service is not delivered or doesn't meet what was promised. Our customer support is available 24/7 to help with any issue.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+      // FAQ Accordion functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+          const question = item.querySelector('.faq-question');
+          const answer = item.querySelector('.faq-answer');
+          const icon = item.querySelector('.faq-icon');
+          
+          question.addEventListener('click', function() {
+            const isOpen = !answer.classList.contains('hidden');
+            
+            if (isOpen) {
+              answer.classList.add('hidden');
+              icon.textContent = '+';
+            } else {
+              answer.classList.remove('hidden');
+              icon.textContent = '−';
+            }
+          });
+        });
+      });
+      </script>
+    {% endif %}
+  </article>
+
+  <!-- Related Pages or Back to Home -->
+  <div class="mt-12 text-center">
+    <a href="/" class="btn btn-secondary">
+      ← Back to Home
+    </a>
+  </div>
+</div>
