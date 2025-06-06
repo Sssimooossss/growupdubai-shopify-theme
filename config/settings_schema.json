@@ -1,0 +1,221 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "GrowUp Dubai",
+    "theme_version": "1.0.0",
+    "theme_author": "GrowUp Dubai",
+    "theme_documentation_url": "https://growupdubai.com/docs",
+    "theme_support_url": "https://growupdubai.com/support"
+  },
+  {
+    "name": "General",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_max_width",
+        "min": 50,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Custom logo width",
+        "default": 150
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary color",
+        "default": "#2ECC71"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secondary color",
+        "default": "#27AE60"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text color",
+        "default": "#333333"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background color",
+        "default": "#FFFFFF"
+      }
+    ]
+  },
+  {
+    "name": "Homepage",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Hero Section"
+      },
+      {
+        "type": "text",
+        "id": "hero_title",
+        "label": "Hero title",
+        "default": "Get Real Arab Instagram Followers in Seconds!"
+      },
+      {
+        "type": "text",
+        "id": "hero_subtitle",
+        "label": "Hero subtitle",
+        "default": "Top quality for UAE & Gulf market. Increase your credibility & boost the algorithm."
+      },
+      {
+        "type": "select",
+        "id": "hero_service_type",
+        "label": "Featured service type",
+        "options": [
+          {
+            "value": "Instagram Followers",
+            "label": "Instagram Followers"
+          },
+          {
+            "value": "TikTok Followers",
+            "label": "TikTok Followers"
+          },
+          {
+            "value": "YouTube Subscribers",
+            "label": "YouTube Subscribers"
+          }
+        ],
+        "default": "Instagram Followers"
+      },
+      {
+        "type": "collection",
+        "id": "featured_collection",
+        "label": "Featured collection"
+      }
+    ]
+  },
+  {
+    "name": "Product",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Product page"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show vendor",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sku",
+        "label": "Show SKU",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quantity_selector",
+        "label": "Show quantity selector",
+        "default": true
+      },
+      {
+        "type": "collection",
+        "id": "related_products_collection",
+        "label": "Related products collection"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cart page"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_notes_enable",
+        "label": "Enable cart notes",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cart_shipping_message",
+        "label": "Shipping message",
+        "default": "Free shipping on orders over $50"
+      }
+    ]
+  },
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Footer content"
+      },
+      {
+        "type": "textarea",
+        "id": "footer_description",
+        "label": "Footer description",
+        "default": "The leading social media growth service for the Arab and Gulf market."
+      },
+      {
+        "type": "text",
+        "id": "contact_info",
+        "label": "Contact information",
+        "default": "Dubai, United Arab Emirates"
+      },
+      {
+        "type": "text",
+        "id": "copyright_text",
+        "label": "Copyright text",
+        "default": "All rights reserved."
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social accounts"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "https://instagram.com/your-account"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok",
+        "info": "https://tiktok.com/@your-account"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "info": "https://youtube.com/c/your-channel"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter",
+        "info": "https://twitter.com/your-account"
+      }
+    ]
+  }
+]
