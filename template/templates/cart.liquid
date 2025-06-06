@@ -1,0 +1,66 @@
+---
+layout: theme
+---
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Your Cart</h1>
+
+  {% if cart.item_count > 0 %}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Cart Items ({{ cart.item_count }})</h2>
+      </div>
+
+      <form action="/cart" method="post" novalidate class="cart">
+        {% for item in cart.items %}
+          <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center space-x-4">
+            {% if item.image %}
+              <img src="{{ item | img_url: '100x100' }}" alt="{{ item.title }}" class="w-16 h-16 object-cover rounded">
+            {% endif %}
+            
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-900 dark:text-white">{{ item.product.title }}</h3>
+              {% unless item.product.has_only_default_variant %}
+                <p class="text-sm text-gray-600 dark:text-gray-400">{{ item.variant.title }}</p>
+              {% endunless %}
+              <p class="text-sm text-gray-600 dark:text-gray-400">{{ item.price | money }} each</p>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" 
+                     class="w-16 px-2 py-1 border border-gray-300 rounded text-center dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            </div>
+
+            <div class="text-right">
+              <p class="font-semibold text-gray-900 dark:text-white">{{ item.line_price | money }}</p>
+            </div>
+          </div>
+        {% endfor %}
+
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-lg font-semibold text-gray-900 dark:text-white">Subtotal:</span>
+            <span class="text-2xl font-bold text-brand-green">{{ cart.total_price | money }}</span>
+          </div>
+          
+          <div class="flex space-x-4">
+            <button type="submit" name="update" class="flex-1 bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+              Update Cart
+            </button>
+            <a href="/checkout" class="flex-1 bg-brand-green text-white py-3 px-6 rounded-lg font-semibold hover:bg-brand-dark transition-colors text-center">
+              Checkout
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  {% else %}
+    <div class="text-center py-12">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Your cart is empty</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-6">Start shopping to add items to your cart</p>
+      <a href="/collections/all" class="bg-brand-green text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-dark transition-colors">
+        Continue Shopping
+      </a>
+    </div>
+  {% endif %}
+</div>
