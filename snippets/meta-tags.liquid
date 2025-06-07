@@ -1,0 +1,90 @@
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ page_title }}{% if current_tags %} &ndash; tagged &quot;{{ current_tags | join: ', ' }}&quot;{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}">
+<meta property="og:type" content="website">
+<meta property="og:description" content="{{ page_description | default: shop.description | default: shop.name }}">
+
+{%- if template contains 'product' -%}
+  <meta property="og:type" content="product">
+  <meta property="product:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  <meta property="product:availability" content="{% if product.available %}instock{% else %}oos{% endif %}">
+{%- endif -%}
+
+{%- if page_image -%}
+  <meta property="og:image" content="http:{{ page_image | img_url: '1200x630' }}">
+  <meta property="og:image:secure_url" content="https:{{ page_image | img_url: '1200x630' }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+{%- endif -%}
+
+<meta name="twitter:site" content="@{{ settings.social_twitter_handle | remove: '@' }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page_title }}{% if current_tags %} &ndash; tagged &quot;{{ current_tags | join: ', ' }}&quot;{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}">
+<meta name="twitter:description" content="{{ page_description | default: shop.description | default: shop.name }}">
+
+{%- if page_image -%}
+  <meta name="twitter:image" content="https:{{ page_image | img_url: '1024x512' }}">
+{%- endif -%}
+
+{%- if template contains 'product' -%}
+  <meta name="twitter:label1" content="Price">
+  <meta name="twitter:data1" content="{% if product.price_varies %}From {{ product.price_min | money }}{% else %}{{ product.price | money }}{% endif %}">
+  <meta name="twitter:label2" content="Availability">
+  <meta name="twitter:data2" content="{% if product.available %}In stock{% else %}Out of stock{% endif %}">
+{%- endif -%}
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  {% if settings.logo %}
+    "logo": {{ settings.logo | img_url: '500x500' | prepend: "https:" | json }},
+  {% endif %}
+  "sameAs": [
+    {{ settings.social_instagram | json }},
+    {{ settings.social_youtube | json }},
+    {{ settings.social_tiktok | json }}
+  ],
+  "url": {{ shop.url | append: page.url | json }}
+}
+</script>
+
+{%- if template contains 'product' -%}
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ shop.url | append: product.url | json }},
+  {% if product.featured_media -%}
+    "image": [
+      {{ product.featured_media | img_url: '800x800' | prepend: "https:" | json }}
+    ],
+  {%- endif %}
+  "description": {{ product.description | strip_html | json }},
+  {% if product.selected_or_first_available_variant.sku != blank -%}
+    "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  {%- endif %}
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | json }}
+  },
+  "offers": [
+    {%- for variant in product.variants -%}
+      {
+        "@type" : "Offer",
+        {%- if variant.sku != blank -%}
+          "sku": {{ variant.sku | json }},
+        {%- endif -%}
+        "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+        "price" : {{ variant.price | divided_by: 100.00 | json }},
+        "priceCurrency" : {{ cart.currency.iso_code | json }},
+        "url" : {{ shop.url | append: variant.url | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+{%- endif -%}
