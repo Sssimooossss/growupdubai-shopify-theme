@@ -4,11 +4,122 @@
     "theme_name": "GrowUp Dubai",
     "theme_version": "1.0.0",
     "theme_author": "GrowUp Dubai",
-    "theme_documentation_url": "https://growupdubai.com/docs",
+    "theme_documentation_url": "https://growupdubai.com",
     "theme_support_url": "https://growupdubai.com/support"
   },
   {
-    "name": "General",
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Brand Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary Green",
+        "default": "#2ECC71"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secondary Green",
+        "default": "#27AE60"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background Color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text Color",
+        "default": "#333333"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent Color",
+        "default": "#E74C3C"
+      },
+      {
+        "type": "header",
+        "content": "Card Colors"
+      },
+      {
+        "type": "color_scheme",
+        "id": "card_color_scheme",
+        "label": "Card color scheme",
+        "default": "background-1"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Fonts"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading Font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body Font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "label": "Base Font Size",
+        "min": 12,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 1600,
+        "step": 10,
+        "default": 1200,
+        "unit": "px",
+        "label": "Page width"
+      },
+      {
+        "type": "select",
+        "id": "card_style",
+        "options": [
+          {
+            "value": "standard",
+            "label": "Standard"
+          },
+          {
+            "value": "card",
+            "label": "Card"
+          }
+        ],
+        "default": "card",
+        "label": "Product card style"
+      }
+    ]
+  },
+  {
+    "name": "Header",
     "settings": [
       {
         "type": "header",
@@ -17,45 +128,39 @@
       {
         "type": "image_picker",
         "id": "logo",
-        "label": "Logo image"
+        "label": "Logo Image"
       },
       {
         "type": "range",
         "id": "logo_max_width",
+        "label": "Logo Width",
         "min": 50,
         "max": 300,
         "step": 10,
         "unit": "px",
-        "label": "Custom logo width",
-        "default": 150
+        "default": 200
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "32 x 32px .png recommended"
       },
       {
         "type": "header",
-        "content": "Colors"
+        "content": "Navigation"
       },
       {
-        "type": "color",
-        "id": "color_primary",
-        "label": "Primary color",
-        "default": "#2ECC71"
+        "type": "link_list",
+        "id": "main_menu",
+        "label": "Main Menu",
+        "default": "main-menu"
       },
       {
-        "type": "color",
-        "id": "color_secondary",
-        "label": "Secondary color",
-        "default": "#27AE60"
-      },
-      {
-        "type": "color",
-        "id": "color_text",
-        "label": "Text color",
-        "default": "#333333"
-      },
-      {
-        "type": "color",
-        "id": "color_background",
-        "label": "Background color",
-        "default": "#FFFFFF"
+        "type": "checkbox",
+        "id": "enable_sticky_header",
+        "label": "Enable Sticky Header",
+        "default": true
       }
     ]
   },
@@ -69,53 +174,87 @@
       {
         "type": "text",
         "id": "hero_title",
-        "label": "Hero title",
-        "default": "Get Real Arab Instagram Followers in Seconds!"
+        "label": "Hero Title",
+        "default": "Get real Arab Instagram followers in seconds!"
       },
       {
-        "type": "text",
+        "type": "textarea",
         "id": "hero_subtitle",
-        "label": "Hero subtitle",
+        "label": "Hero Subtitle",
         "default": "Top quality for UAE & Gulf market. Increase your credibility & boost the algorithm."
       },
       {
-        "type": "select",
-        "id": "hero_service_type",
-        "label": "Featured service type",
-        "options": [
-          {
-            "value": "Instagram Followers",
-            "label": "Instagram Followers"
-          },
-          {
-            "value": "TikTok Followers",
-            "label": "TikTok Followers"
-          },
-          {
-            "value": "YouTube Subscribers",
-            "label": "YouTube Subscribers"
-          }
-        ],
-        "default": "Instagram Followers"
+        "type": "image_picker",
+        "id": "hero_background",
+        "label": "Hero Background Image"
+      },
+      {
+        "type": "header",
+        "content": "Featured Services"
       },
       {
         "type": "collection",
         "id": "featured_collection",
-        "label": "Featured collection"
+        "label": "Featured Services Collection"
+      },
+      {
+        "type": "range",
+        "id": "featured_products_limit",
+        "label": "Number of Featured Services",
+        "min": 3,
+        "max": 12,
+        "step": 1,
+        "default": 6
       }
     ]
   },
   {
-    "name": "Product",
+    "name": "Product Pages",
     "settings": [
       {
         "type": "header",
-        "content": "Product page"
+        "content": "Product Images"
+      },
+      {
+        "type": "select",
+        "id": "product_image_size",
+        "label": "Image Size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          }
+        ],
+        "default": "medium"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_image_zoom",
+        "label": "Enable Image Zoom",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_secondary_image",
+        "label": "Show secondary image on hover",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Product Information"
       },
       {
         "type": "checkbox",
         "id": "show_vendor",
-        "label": "Show vendor",
+        "label": "Show Vendor",
         "default": false
       },
       {
@@ -126,95 +265,153 @@
       },
       {
         "type": "checkbox",
-        "id": "show_quantity_selector",
-        "label": "Show quantity selector",
+        "id": "enable_reviews",
+        "label": "Enable Product Reviews",
         "default": true
-      },
-      {
-        "type": "collection",
-        "id": "related_products_collection",
-        "label": "Related products collection"
       }
     ]
   },
   {
-    "name": "Cart",
+    "name": "Collection Pages",
     "settings": [
       {
         "type": "header",
-        "content": "Cart page"
+        "content": "Collection Grid"
+      },
+      {
+        "type": "range",
+        "id": "products_per_page",
+        "min": 8,
+        "max": 50,
+        "step": 1,
+        "default": 16,
+        "label": "Products per page"
       },
       {
         "type": "checkbox",
-        "id": "cart_notes_enable",
-        "label": "Enable cart notes",
+        "id": "enable_filtering",
+        "label": "Enable filtering",
+        "default": true,
+        "info": "Customize filters by adding tags to products. [Learn more](https://help.shopify.com/manual/online-store/themes/os20/customize/filters)"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_sorting",
+        "label": "Enable sorting",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Cart & Checkout",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cart Settings"
+      },
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart Type",
+        "options": [
+          {
+            "value": "page",
+            "label": "Cart Page"
+          },
+          {
+            "value": "drawer",
+            "label": "Cart Drawer"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cart_notes",
+        "label": "Enable Cart Notes",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_threshold",
+        "label": "Free Shipping Threshold",
+        "info": "Amount needed for free shipping (leave empty to disable)"
+      }
+    ]
+  },
+  {
+    "name": "Social Media Services",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Platform Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_instagram_services",
+        "label": "Enable Instagram Services",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_tiktok_services",
+        "label": "Enable TikTok Services",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_youtube_services",
+        "label": "Enable YouTube Services",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Service Features"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_delivery_time",
+        "label": "Show Delivery Time",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quality_badges",
+        "label": "Show Quality Badges",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "default_delivery_time",
+        "label": "Default Delivery Time",
+        "default": "24-48 hours"
+      }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Search Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "predictive_search_enabled",
+        "label": "Enable predictive search",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "predictive_search_show_vendor",
+        "label": "Show vendor in search results",
         "default": false
       },
       {
-        "type": "text",
-        "id": "cart_shipping_message",
-        "label": "Shipping message",
-        "default": "Free shipping on orders over $50"
-      }
-    ]
-  },
-  {
-    "name": "Footer",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Footer content"
-      },
-      {
-        "type": "textarea",
-        "id": "footer_description",
-        "label": "Footer description",
-        "default": "The leading social media growth service for the Arab and Gulf market."
-      },
-      {
-        "type": "text",
-        "id": "contact_info",
-        "label": "Contact information",
-        "default": "Dubai, United Arab Emirates"
-      },
-      {
-        "type": "text",
-        "id": "copyright_text",
-        "label": "Copyright text",
-        "default": "All rights reserved."
-      }
-    ]
-  },
-  {
-    "name": "Social media",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Social accounts"
-      },
-      {
-        "type": "text",
-        "id": "social_instagram_link",
-        "label": "Instagram",
-        "info": "https://instagram.com/your-account"
-      },
-      {
-        "type": "text",
-        "id": "social_tiktok_link",
-        "label": "TikTok",
-        "info": "https://tiktok.com/@your-account"
-      },
-      {
-        "type": "text",
-        "id": "social_youtube_link",
-        "label": "YouTube",
-        "info": "https://youtube.com/c/your-channel"
-      },
-      {
-        "type": "text",
-        "id": "social_twitter_link",
-        "label": "Twitter",
-        "info": "https://twitter.com/your-account"
+        "type": "checkbox",
+        "id": "predictive_search_show_price",
+        "label": "Show price in search results",
+        "default": true
       }
     ]
   }
