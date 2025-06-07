@@ -1,0 +1,310 @@
+{%- paginate collection.products by 12 -%}
+<div class="collection-page">
+  <div class="container">
+    <!-- Collection Header -->
+    <div class="collection-header">
+      <h1 class="collection-title">{{ collection.title }}</h1>
+      {% if collection.description != blank %}
+        <div class="collection-description rte">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+      
+      <div class="collection-count">
+        {{ 'templates.collection.product_count' | t: count: collection.products_count }}
+      </div>
+    </div>
+    
+    <!-- Filters and Sorting -->
+    <div class="collection-controls">
+      <div class="collection-filters">
+        <!-- Platform Filter -->
+        <div class="filter-group">
+          <label class="filter-label">Platform:</label>
+          <div class="filter-options">
+            <a href="{{ collection.url }}" class="filter-option {% unless current_tags %}active{% endunless %}">
+              All
+            </a>
+            {% for tag in collection.all_tags %}
+              {% if tag contains 'platform-' %}
+                {% assign platform_name = tag | remove: 'platform-' | capitalize %}
+                <a href="{{ collection.url }}/{{ tag }}" 
+                   class="filter-option {% if current_tags contains tag %}active{% endif %}">
+                  {{ platform_name }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        
+        <!-- Service Type Filter -->
+        <div class="filter-group">
+          <label class="filter-label">Service:</label>
+          <div class="filter-options">
+            {% for tag in collection.all_tags %}
+              {% if tag contains 'service-' %}
+                {% assign service_name = tag | remove: 'service-' | capitalize %}
+                <a href="{{ collection.url }}/{{ tag }}" 
+                   class="filter-option {% if current_tags contains tag %}active{% endif %}">
+                  {{ service_name }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Sort Options -->
+      <div class="collection-sort">
+        <label for="SortBy" class="sort-label">{{ 'collections.sorting.title' | t }}</label>
+        <select name="sort_by" id="SortBy" class="sort-select">
+          <option value="manual">{{ 'collections.sorting.featured' | t }}</option>
+          <option value="best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>
+            {{ 'collections.sorting.best_selling' | t }}
+          </option>
+          <option value="title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>
+            {{ 'collections.sorting.az' | t }}
+          </option>
+          <option value="title-descending" {% if collection.sort_by == 'title-descending' %}selected{% endif %}>
+            {{ 'collections.sorting.za' | t }}
+          </option>
+          <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>
+            {{ 'collections.sorting.price_ascending' | t }}
+          </option>
+          <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>
+            {{ 'collections.sorting.price_descending' | t }}
+          </option>
+          <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>
+            {{ 'collections.sorting.date_descending' | t }}
+          </option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Products Grid -->
+    {% if collection.products.size > 0 %}
+      <div class="products-grid">
+        {% for product in collection.products %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      </div>
+      
+      <!-- Pagination -->
+      {% if paginate.pages > 1 %}
+        <nav class="pagination" role="navigation" aria-label="Pagination">
+          {% if paginate.previous %}
+            <a href="{{ paginate.previous.url }}" class="pagination-item pagination-prev">
+              ← {{ 'general.pagination.previous' | t }}
+            </a>
+          {% endif %}
+          
+          {% for part in paginate.parts %}
+            {% if part.is_link %}
+              <a href="{{ part.url }}" class="pagination-item">{{ part.title }}</a>
+            {% else %}
+              {% if part.title == paginate.current_page %}
+                <span class="pagination-item pagination-current">{{ part.title }}</span>
+              {% else %}
+                <span class="pagination-item">{{ part.title }}</span>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          
+          {% if paginate.next %}
+            <a href="{{ paginate.next.url }}" class="pagination-item pagination-next">
+              {{ 'general.pagination.next' | t }} →
+            </a>
+          {% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="collection-empty">
+        <h2>{{ 'collections.general.no_matches' | t }}</h2>
+        <p>{{ 'collections.general.no_products_html' | t }}</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{%- endpaginate -%}
+
+<style>
+.collection-page {
+  padding: 2rem 0;
+}
+
+.collection-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.collection-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.collection-description {
+  max-width: 600px;
+  margin: 0 auto 1rem;
+  color: #666;
+}
+
+.collection-count {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.collection-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.collection-filters {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.filter-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-option {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 1.5rem;
+  text-decoration: none;
+  color: #666;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.filter-option:hover,
+.filter-option.active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(46, 204, 113, 0.1);
+}
+
+.collection-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-label {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.sort-select {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 0.5rem;
+  background: white;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+}
+
+.pagination-item {
+  padding: 0.75rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.pagination-item:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.pagination-current {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.collection-empty {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+@media (max-width: 768px) {
+  .collection-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .collection-filters {
+    flex-direction: column;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Sort functionality
+  const sortSelect = document.getElementById('SortBy');
+  
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('sort_by', this.value);
+      window.location.href = url.toString();
+    });
+  }
+});
+</script>
