@@ -1,0 +1,423 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign product_form_id = 'ProductForm-' | append: section.id -%}
+
+<div class="product-page">
+  <div class="container">
+    <div class="product-grid">
+      <!-- Product Images -->
+      <div class="product-images">
+        {% if product.media.size > 0 %}
+          <div class="product-media-gallery">
+            <div class="product-main-image">
+              <img src="{{ current_variant.featured_media | default: product.featured_media | img_url: '800x800' }}"
+                   alt="{{ product.title | escape }}"
+                   id="ProductMainImage"
+                   class="product-featured-image">
+            </div>
+            
+            {% if product.media.size > 1 %}
+              <div class="product-thumbnails">
+                {% for media in product.media limit: 4 %}
+                  <button type="button" 
+                          class="product-thumbnail {% if forloop.first %}active{% endif %}"
+                          data-media-id="{{ media.id }}">
+                    <img src="{{ media | img_url: '150x150' }}" 
+                         alt="{{ media.alt | escape }}">
+                  </button>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="product-no-image">
+            <div class="placeholder-svg">
+              {% render 'icon-no-image' %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      
+      <!-- Product Info -->
+      <div class="product-info">
+        <div class="product-badges">
+          {% if product.tags contains 'popular' %}
+            <span class="badge badge-popular">🔥 Popular</span>
+          {% endif %}
+          {% if product.tags contains 'arab-users' %}
+            <span class="badge badge-arab">🇦🇪 Arab Users</span>
+          {% endif %}
+          {% if product.tags contains 'instant-delivery' %}
+            <span class="badge badge-instant">⚡ Instant Delivery</span>
+          {% endif %}
+        </div>
+        
+        <h1 class="product-title">{{ product.title }}</h1>
+        
+        {% if product.vendor != blank and settings.show_vendor %}
+          <p class="product-vendor">{{ product.vendor }}</p>
+        {% endif %}
+        
+        <div class="product-price">
+          <span class="price">
+            {% if current_variant.compare_at_price > current_variant.price %}
+              <span class="price-sale">{{ current_variant.price | money }}</span>
+              <span class="price-regular">{{ current_variant.compare_at_price | money }}</span>
+            {% else %}
+              {{ current_variant.price | money }}
+            {% endif %}
+          </span>
+          
+          {% if current_variant.unit_price_measurement %}
+            <div class="unit-price">
+              {{ current_variant.unit_price | money }}
+              {%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+                {{- current_variant.unit_price_measurement.reference_value -}}
+              {%- endif -%}
+              {{ current_variant.unit_price_measurement.reference_unit }}
+            </div>
+          {% endif %}
+        </div>
+        
+        {% if product.description != blank %}
+          <div class="product-description rte">
+            {{ product.description }}
+          </div>
+        {% endif %}
+        
+        <!-- Product Form -->
+        {% form 'product', product, id: product_form_id, class: 'form product-form', novalidate: 'novalidate', data-type: 'add-to-cart-form' %}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+          
+          {% unless product.has_only_default_variant %}
+            <div class="product-form-controls">
+              {% for option in product.options_with_values %}
+                <div class="product-form-input">
+                  <label class="form-label" for="Option-{{ forloop.index0 }}">
+                    {{ option.name }}
+                  </label>
+                  <div class="select">
+                    <select id="Option-{{ forloop.index0 }}"
+                            name="options[{{ option.name | escape }}]"
+                            form="{{ product_form_id }}">
+                      {% for value in option.values %}
+                        <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
+                          {{ value }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                    {% render 'icon-caret' %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% endunless %}
+          
+          <!-- Quantity Selector -->
+          <div class="product-form-input product-form-quantity">
+            <label class="form-label" for="Quantity-{{ section.id }}">
+              {{ 'products.product.quantity.label' | t }}
+            </label>
+            <quantity-input class="quantity">
+              <button class="quantity-button no-js-hidden" name="minus" type="button">
+                <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}</span>
+                {% render 'icon-minus' %}
+              </button>
+              <input class="quantity-input"
+                     type="number"
+                     name="quantity"
+                     id="Quantity-{{ section.id }}"
+                     min="1"
+                     value="1"
+                     form="{{ product_form_id }}">
+              <button class="quantity-button no-js-hidden" name="plus" type="button">
+                <span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: product.title | escape }}</span>
+                {% render 'icon-plus' %}
+              </button>
+            </quantity-input>
+          </div>
+          
+          <!-- Add to Cart Button -->
+          <div class="product-form-buttons">
+            <button type="submit"
+                    name="add"
+                    class="btn product-form-cart-button btn-primary"
+                    {% if current_variant.available == false %}disabled{% endif %}>
+              <span>
+                {%- if current_variant.available -%}
+                  {{ 'products.product.add_to_cart' | t }}
+                {%- else -%}
+                  {{ 'products.product.sold_out' | t }}
+                {%- endif -%}
+              </span>
+              <div class="loading-overlay hidden">
+                <div class="loading-overlay-spinner">
+                  {% render 'icon-spinner' %}
+                </div>
+              </div>
+            </button>
+          </div>
+        {% endform %}
+        
+        <!-- Service Features -->
+        <div class="service-features">
+          <div class="feature-item">
+            <span class="feature-icon">⚡</span>
+            <span class="feature-text">{{ settings.default_delivery_time | default: "24-48 hours delivery" }}</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🛡️</span>
+            <span class="feature-text">100% Safe & Secure</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🇦🇪</span>
+            <span class="feature-text">Arab & Gulf Optimized</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">📱</span>
+            <span class="feature-text">Real Active Users</span>
+          </div>
+        </div>
+        
+        <!-- Trust Signals -->
+        <div class="trust-signals">
+          <div class="trust-item">
+            <span class="trust-number">50K+</span>
+            <span class="trust-label">Happy Customers</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-number">99.9%</span>
+            <span class="trust-label">Success Rate</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-number">24/7</span>
+            <span class="trust-label">Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Product Details Tabs -->
+    <div class="product-details-tabs">
+      <div class="tabs-navigation">
+        <button class="tab-button active" data-tab="description">Description</button>
+        <button class="tab-button" data-tab="delivery">Delivery Info</button>
+        <button class="tab-button" data-tab="faq">FAQ</button>
+      </div>
+      
+      <div class="tab-content active" id="tab-description">
+        <div class="tab-inner">
+          {{ product.description }}
+          
+          <h3>What You Get:</h3>
+          <ul>
+            <li>✅ Real active {{ product.type | default: "followers" }}</li>
+            <li>✅ Arab & Gulf region users</li>
+            <li>✅ Gradual delivery for natural growth</li>
+            <li>✅ 24/7 customer support</li>
+            <li>✅ 30-day refill guarantee</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="tab-delivery">
+        <div class="tab-inner">
+          <h3>Delivery Information</h3>
+          <p><strong>Start Time:</strong> 0-30 minutes after payment</p>
+          <p><strong>Delivery Speed:</strong> {{ settings.default_delivery_time | default: "24-48 hours" }}</p>
+          <p><strong>Delivery Method:</strong> Gradual and natural</p>
+          <p><strong>Requirements:</strong> Public account (temporary)</p>
+          
+          <div class="delivery-steps">
+            <div class="step">
+              <span class="step-number">1</span>
+              <span class="step-text">Complete your order</span>
+            </div>
+            <div class="step">
+              <span class="step-number">2</span>
+              <span class="step-text">Receive order confirmation</span>
+            </div>
+            <div class="step">
+              <span class="step-number">3</span>
+              <span class="step-text">Delivery starts automatically</span>
+            </div>
+            <div class="step">
+              <span class="step-number">4</span>
+              <span class="step-text">Watch your growth!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="tab-faq">
+        <div class="tab-inner">
+          <div class="faq-item">
+            <h4>Are these real users?</h4>
+            <p>Yes, all our followers/likes/views come from real, active users primarily from the Arab region and Gulf countries.</p>
+          </div>
+          
+          <div class="faq-item">
+            <h4>Is this safe for my account?</h4>
+            <p>Absolutely. We use gradual delivery methods that mimic natural growth patterns, keeping your account completely safe.</p>
+          </div>
+          
+          <div class="faq-item">
+            <h4>What if I don't receive my order?</h4>
+            <p>We have a 100% delivery guarantee. If for any reason your order isn't delivered, we provide a full refund.</p>
+          </div>
+          
+          <div class="faq-item">
+            <h4>Can I split the delivery?</h4>
+            <p>Yes, our system automatically delivers in small batches over time to ensure natural-looking growth.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Product variant selection
+document.addEventListener('DOMContentLoaded', function() {
+  // Variant selection functionality
+  const variantSelects = document.querySelectorAll('select[name^="options"]');
+  const productForm = document.querySelector('#{{ product_form_id }}');
+  
+  if (variantSelects.length > 0) {
+    variantSelects.forEach(select => {
+      select.addEventListener('change', updateVariant);
+    });
+  }
+  
+  function updateVariant() {
+    const selectedOptions = Array.from(variantSelects).map(select => select.value);
+    const matchedVariant = window.productVariants.find(variant => {
+      return variant.options.every((option, index) => option === selectedOptions[index]);
+    });
+    
+    if (matchedVariant) {
+      document.querySelector('input[name="id"]').value = matchedVariant.id;
+      updatePrice(matchedVariant);
+      updateButton(matchedVariant);
+    }
+  }
+  
+  // Tab functionality
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tabId = button.getAttribute('data-tab');
+      
+      // Remove active classes
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      // Add active classes
+      button.classList.add('active');
+      document.querySelector(`#tab-${tabId}`).classList.add('active');
+    });
+  });
+  
+  // Thumbnail functionality
+  const thumbnails = document.querySelectorAll('.product-thumbnail');
+  const mainImage = document.querySelector('#ProductMainImage');
+  
+  thumbnails.forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      const mediaId = thumb.getAttribute('data-media-id');
+      const newImageSrc = thumb.querySelector('img').src.replace('150x150', '800x800');
+      
+      // Remove active class from all thumbnails
+      thumbnails.forEach(t => t.classList.remove('active'));
+      
+      // Add active class to clicked thumbnail
+      thumb.classList.add('active');
+      
+      // Update main image
+      mainImage.src = newImageSrc;
+    });
+  });
+});
+
+// Product variants data
+window.productVariants = {{ product.variants | json }};
+</script>
+
+<style>
+.product-page {
+  padding: 2rem 0;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.product-media-gallery {
+  position: sticky;
+  top: 2rem;
+}
+
+.product-main-image {
+  margin-bottom: 1rem;
+}
+
+.product-featured-image {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+}
+
+.product-thumbnails {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.product-thumbnail {
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.product-thumbnail.active,
+.product-thumbnail:hover {
+  border-color: var(--color-primary);
+}
+
+.product-thumbnail img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.product-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge-popular {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  color: white;
+}
+
+.badge-arab {
+  background: linear-gradient(135deg, #2ECC71, #27AE60);
+  color: white;
+}
+
+.badge-instant {
+  background: linear-gradient(135deg,
