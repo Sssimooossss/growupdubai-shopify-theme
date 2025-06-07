@@ -421,3 +421,268 @@ window.productVariants = {{ product.variants | json }};
 
 .badge-instant {
   background: linear-gradient(135deg,
+                              
+
+.badge-instant {
+  background: linear-gradient(135deg, #FFD93D, #FF6B6B);
+  color: white;
+}
+
+.product-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.product-vendor {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.product-price {
+  margin-bottom: 2rem;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.price-sale {
+  color: var(--color-accent);
+}
+
+.price-regular {
+  text-decoration: line-through;
+  color: #999;
+  margin-left: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.product-description {
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.product-form-controls {
+  margin-bottom: 2rem;
+}
+
+.product-form-input {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.select {
+  position: relative;
+}
+
+.select select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 0.5rem;
+  background: white;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  border: 2px solid #ddd;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.quantity-button {
+  background: #f8f9fa;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.quantity-button:hover {
+  background: #e9ecef;
+}
+
+.quantity-input {
+  border: none;
+  padding: 0.75rem;
+  text-align: center;
+  width: 80px;
+  background: white;
+}
+
+.quantity-input:focus {
+  outline: none;
+}
+
+.product-form-cart-button {
+  width: 100%;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.service-features {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 1rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.feature-item:last-child {
+  margin-bottom: 0;
+}
+
+.feature-icon {
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.trust-signals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.trust-item {
+  text-align: center;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.trust-number {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.trust-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.product-details-tabs {
+  border-top: 1px solid #eee;
+  padding-top: 2rem;
+}
+
+.tabs-navigation {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 2rem;
+}
+
+.tab-button {
+  padding: 1rem 2rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.delivery-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+.step-number {
+  width: 2rem;
+  height: 2rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.faq-item {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.faq-item h4 {
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .product-title {
+    font-size: 2rem;
+  }
+  
+  .trust-signals {
+    grid-template-columns: 1fr;
+  }
+  
+  .tabs-navigation {
+    flex-direction: column;
+  }
+  
+  .delivery-steps {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
