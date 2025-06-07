@@ -784,3 +784,591 @@ window.GrowUpDubai = window.GrowUpDubai || {};
 
     bindEvents: function() {
       window.addEventListener('scroll', utils.throttle(() => {
+        // Scroll effects (continuazione)
+const scrollEffects = {
+    init: function() {
+      this.bindEvents();
+      this.initStickyHeader();
+    },
+
+    bindEvents: function() {
+      window.addEventListener('scroll', utils.throttle(() => {
+        this.updateStickyHeader();
+        this.updateScrollProgress();
+      }, 16));
+    },
+
+    initStickyHeader: function() {
+      this.header = document.querySelector('.site-header');
+      this.headerHeight = this.header ? this.header.offsetHeight : 0;
+    },
+
+    updateStickyHeader: function() {
+      if (!this.header) return;
+      
+      const scrollY = window.scrollY;
+      
+      if (scrollY > 100) {
+        this.header.classList.add('scrolled');
+      } else {
+        this.header.classList.remove('scrolled');
+      }
+    },
+
+    updateScrollProgress: function() {
+      const progressBar = document.querySelector('.scroll-progress');
+      if (!progressBar) return;
+      
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+      
+      progressBar.style.width = `${scrollPercent}%`;
+    }
+  };
+
+  // Form validation
+  const forms = {
+    init: function() {
+      this.bindEvents();
+    },
+
+    bindEvents: function() {
+      document.addEventListener('submit', (e) => {
+        if (e.target.matches('.validate-form')) {
+          if (!this.validateForm(e.target)) {
+            e.preventDefault();
+          }
+        }
+      });
+
+      // Real-time validation
+      document.addEventListener('blur', (e) => {
+        if (e.target.matches('.form-control')) {
+          this.validateField(e.target);
+        }
+      }, true);
+    },
+
+    validateForm: function(form) {
+      const fields = form.querySelectorAll('.form-control[required]');
+      let isValid = true;
+
+      fields.forEach(field => {
+        if (!this.validateField(field)) {
+          isValid = false;
+        }
+      });
+
+      return isValid;
+    },
+
+    validateField: function(field) {
+      const value = field.value.trim();
+      const type = field.type;
+      let isValid = true;
+      let errorMessage = '';
+
+      // Required validation
+      if (field.hasAttribute('required') && !value) {
+        isValid = false;
+        errorMessage = 'This field is required';
+      }
+
+      // Email validation
+      if (type === 'email' && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          isValid = false;
+          errorMessage = 'Please enter a valid email address';
+        }
+      }
+
+      // Phone validation
+      if (type === 'tel' && value) {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        if (!phoneRegex.test(value.replace(/\s/g, ''))) {
+          isValid = false;
+          errorMessage = 'Please enter a valid phone number';
+        }
+      }
+
+      this.showFieldValidation(field, isValid, errorMessage);
+      return isValid;
+    },
+
+    showFieldValidation: function(field, isValid, errorMessage) {
+      const formGroup = field.closest('.form-group');
+      const errorElement = formGroup?.querySelector('.form-error');
+
+      // Remove previous validation classes
+      field.classList.remove('form-control--error', 'form-control--success');
+
+      if (isValid) {
+        field.classList.add('form-control--success');
+        if (errorElement) {
+          errorElement.textContent = '';
+          errorElement.style.display = 'none';
+        }
+      } else {
+        field.classList.add('form-control--error');
+        if (errorElement) {
+          errorElement.textContent = errorMessage;
+          errorElement.style.display = 'block';
+        }
+      }
+    }
+  };
+
+  // Search functionality
+  const search = {
+    init: function() {
+      this.bindEvents();
+      this.initPredictiveSearch();
+    },
+
+    bindEvents: function() {
+      const searchForms = document.querySelectorAll('.search-form');
+      searchForms.forEach(form => {
+        form.addEventListener('submit', this.handleSearch.bind(this));
+      });
+
+      const searchInputs = document.querySelectorAll('.search-input');
+      searchInputs.forEach(input => {
+        input.addEventListener('input', utils.debounce(this.handlePredictiveSearch.bind(this), 300));
+        input.addEventListener('focus', this.showPredictiveSearch.bind(this));
+        input.addEventListener('blur', this.hidePredictiveSearch.bind(this));
+      });
+    },
+
+    handleSearch: function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const query = form.querySelector('.search-input').value.trim();
+      
+      if (query) {
+        window.location.href = `/search?q=${encodeURIComponent(query)}`;
+      }
+    },
+
+    initPredictiveSearch: function() {
+      // Initialize predictive search if enabled
+      if (window.routes && window.routes.predictive_search_url) {
+        this.predictiveSearchEnabled = true;
+      }
+    },
+
+    handlePredictiveSearch: function(e) {
+      if (!this.predictiveSearchEnabled) return;
+      
+      const query = e.target.value.trim();
+      if (query.length < 2) {
+        this.hidePredictiveSearch();
+        return;
+      }
+
+      this.performPredictiveSearch(query);
+    },
+
+    performPredictiveSearch: function(query) {
+      const url = `${window.routes.predictive_search_url}?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=5`;
+      
+      fetch(url)
+        .then(response => response.text())
+        .then(html => {
+          this.showPredictiveResults(html);
+        })
+        .catch(error => {
+          console.error('Predictive search error:', error);
+        });
+    },
+
+    showPredictiveResults: function(html) {
+      let resultsContainer = document.querySelector('.predictive-search-results');
+      
+      if (!resultsContainer) {
+        resultsContainer = document.createElement('div');
+        resultsContainer.className = 'predictive-search-results';
+        document.body.appendChild(resultsContainer);
+      }
+      
+      resultsContainer.innerHTML = html;
+      resultsContainer.style.display = 'block';
+    },
+
+    showPredictiveSearch: function() {
+      const resultsContainer = document.querySelector('.predictive-search-results');
+      if (resultsContainer && resultsContainer.innerHTML.trim()) {
+        resultsContainer.style.display = 'block';
+      }
+    },
+
+    hidePredictiveSearch: function() {
+      setTimeout(() => {
+        const resultsContainer = document.querySelector('.predictive-search-results');
+        if (resultsContainer) {
+          resultsContainer.style.display = 'none';
+        }
+      }, 200);
+    }
+  };
+
+  // Performance optimizations
+  const performance = {
+    init: function() {
+      this.lazyLoadImages();
+      this.preloadCriticalResources();
+    },
+
+    lazyLoadImages: function() {
+      const images = document.querySelectorAll('img[data-src]');
+      
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              img.classList.remove('lazy');
+              observer.unobserve(img);
+            }
+          });
+        });
+
+        images.forEach(img => imageObserver.observe(img));
+      } else {
+        // Fallback for browsers without IntersectionObserver
+        images.forEach(img => {
+          img.src = img.dataset.src;
+          img.classList.remove('lazy');
+        });
+      }
+    },
+
+    preloadCriticalResources: function() {
+      // Preload critical CSS and fonts
+      const criticalResources = [
+        '/assets/application.css',
+        'https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap'
+      ];
+
+      criticalResources.forEach(href => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = href;
+        link.as = href.includes('.css') ? 'style' : 'font';
+        if (href.includes('font')) {
+          link.crossOrigin = 'anonymous';
+        }
+        document.head.appendChild(link);
+      });
+    }
+  };
+
+  // Analytics and tracking
+  const analytics = {
+    init: function() {
+      this.trackPageView();
+      this.bindEvents();
+    },
+
+    bindEvents: function() {
+      // Track add to cart events
+      document.addEventListener('cart:item-added', (e) => {
+        this.trackAddToCart(e.detail.item);
+      });
+
+      // Track product views
+      if (document.body.classList.contains('template-product')) {
+        this.trackProductView();
+      }
+
+      // Track search
+      document.addEventListener('submit', (e) => {
+        if (e.target.matches('.search-form')) {
+          const query = e.target.querySelector('.search-input').value;
+          this.trackSearch(query);
+        }
+      });
+    },
+
+    trackPageView: function() {
+      if (typeof gtag !== 'undefined') {
+        gtag('config', 'GA_MEASUREMENT_ID', {
+          page_title: document.title,
+          page_location: window.location.href
+        });
+      }
+    },
+
+    trackAddToCart: function(item) {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'add_to_cart', {
+          currency: 'USD',
+          value: item.price / 100,
+          items: [{
+            item_id: item.variant_id,
+            item_name: item.product_title,
+            category: utils.getPlatform(item) || 'Social Media Service',
+            quantity: item.quantity,
+            price: item.price / 100
+          }]
+        });
+      }
+    },
+
+    trackProductView: function() {
+      const productData = window.product;
+      if (productData && typeof gtag !== 'undefined') {
+        gtag('event', 'view_item', {
+          currency: 'USD',
+          value: productData.price / 100,
+          items: [{
+            item_id: productData.id,
+            item_name: productData.title,
+            category: utils.getPlatform(productData) || 'Social Media Service',
+            price: productData.price / 100
+          }]
+        });
+      }
+    },
+
+    trackSearch: function(query) {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'search', {
+          search_term: query
+        });
+      }
+    }
+  };
+
+  // Initialize everything when DOM is ready
+  function init() {
+    // Core functionality
+    themeSwitcher.init();
+    cart.init();
+    product.init();
+    collection.init();
+    mobileMenu.init();
+    faq.init();
+    forms.init();
+    search.init();
+    scrollEffects.init();
+    
+    // Platform-specific features
+    platformFeatures.init();
+    
+    // Performance optimizations
+    performance.init();
+    
+    // Analytics
+    analytics.init();
+
+    // Add toast styles if not already present
+    if (!document.querySelector('#toast-styles')) {
+      const toastStyles = document.createElement('style');
+      toastStyles.id = 'toast-styles';
+      toastStyles.textContent = `
+        .toast {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: var(--z-toast, 1080);
+          min-width: 300px;
+          max-width: 400px;
+          background: white;
+          border-radius: var(--border-radius-md, 0.5rem);
+          box-shadow: var(--shadow-xl, 0 20px 25px rgba(0,0,0,0.15));
+          transform: translateX(100%);
+          transition: transform 0.3s ease;
+        }
+        
+        .toast--show {
+          transform: translateX(0);
+        }
+        
+        .toast__content {
+          padding: 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+        }
+        
+        .toast__message {
+          flex: 1;
+          font-weight: 600;
+        }
+        
+        .toast__close {
+          background: none;
+          border: none;
+          font-size: 1.2rem;
+          cursor: pointer;
+          opacity: 0.6;
+          transition: opacity 0.3s ease;
+        }
+        
+        .toast__close:hover {
+          opacity: 1;
+        }
+        
+        .toast--success {
+          border-left: 4px solid var(--color-success, #27AE60);
+        }
+        
+        .toast--error {
+          border-left: 4px solid var(--color-error, #E74C3C);
+        }
+        
+        .toast--warning {
+          border-left: 4px solid var(--color-warning, #F39C12);
+        }
+        
+        .toast--info {
+          border-left: 4px solid var(--color-info, #3498DB);
+        }
+      `;
+      document.head.appendChild(toastStyles);
+    }
+
+    console.log('🇦🇪 GrowUp Dubai theme initialized successfully!');
+  }
+
+  // Expose utilities and modules to global scope
+  window.GrowUpDubai = {
+    utils,
+    cart,
+    product,
+    themeSwitcher,
+    platformFeatures,
+    init
+  };
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+
+// Additional platform-specific enhancements
+document.addEventListener('DOMContentLoaded', function() {
+  
+  // Enhanced platform switching with smooth animations
+  const platformCards = document.querySelectorAll('.platform-card');
+  platformCards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+    card.classList.add('fade-in');
+    
+    card.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-10px) scale(1.02)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0) scale(1)';
+    });
+  });
+
+  // Enhanced notification system with realistic timing
+  const notificationElement = document.querySelector('.notification-text');
+  if (notificationElement) {
+    const notifications = [
+      { text: '5,000 Instagram followers delivered', platform: 'instagram' },
+      { text: '2,500 TikTok likes delivered', platform: 'tiktok' },
+      { text: '10,000 YouTube views delivered', platform: 'youtube' },
+      { text: '1,000 Instagram likes delivered', platform: 'instagram' },
+      { text: '3,000 TikTok followers delivered', platform: 'tiktok' },
+      { text: '7,500 YouTube subscribers delivered', platform: 'youtube' }
+    ];
+    
+    let currentIndex = 0;
+    
+    function updateNotification() {
+      const notification = notifications[currentIndex];
+      const timeAgo = Math.floor(Math.random() * 120) + 1; // 1-120 seconds ago
+      
+      notificationElement.textContent = notification.text;
+      
+      const timeElement = document.querySelector('.notification-time');
+      if (timeElement) {
+        timeElement.textContent = timeAgo < 60 ? `${timeAgo} sec ago` : `${Math.floor(timeAgo/60)} min ago`;
+      }
+      
+      currentIndex = (currentIndex + 1) % notifications.length;
+    }
+    
+    // Update immediately and then at random intervals
+    updateNotification();
+    setInterval(updateNotification, Math.random() * 20000 + 10000); // 10-30 seconds
+  }
+
+  // Enhanced form handling for Arab/Gulf region
+  const emailInputs = document.querySelectorAll('input[type="email"]');
+  emailInputs.forEach(input => {
+    input.addEventListener('blur', function() {
+      const email = this.value.toLowerCase();
+      
+      // Suggest popular Arab domain alternatives
+      const arabDomains = ['gmail.com', 'hotmail.com', 'yahoo.com'];
+      const commonMistakes = {
+        'gmai.com': 'gmail.com',
+        'gmial.com': 'gmail.com',
+        'hotmai.com': 'hotmail.com',
+        'yahooo.com': 'yahoo.com'
+      };
+      
+      for (const [mistake, correction] of Object.entries(commonMistakes)) {
+        if (email.includes(mistake)) {
+          const correctedEmail = email.replace(mistake, correction);
+          if (confirm(`Did you mean: ${correctedEmail}?`)) {
+            this.value = correctedEmail;
+          }
+          break;
+        }
+      }
+    });
+  });
+
+  // Platform-specific pricing display
+  const priceElements = document.querySelectorAll('.price');
+  priceElements.forEach(priceEl => {
+    const productCard = priceEl.closest('.card, .product-card');
+    if (productCard) {
+      const platform = window.GrowUpDubai.utils.getPlatform(productCard.dataset);
+      if (platform) {
+        priceEl.classList.add(`price--${platform}`);
+      }
+    }
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+
+});
+
+// Service Worker registration for PWA capabilities
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(registration) {
+        console.log('ServiceWorker registration successful');
+      })
+      .catch(function(err) {
+        console.log('ServiceWorker registration failed');
+      });
+  });
+}
