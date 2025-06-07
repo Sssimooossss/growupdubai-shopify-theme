@@ -1,0 +1,757 @@
+{%- liquid
+  assign menu = section.settings.menu | default: settings.main_menu | default: 'main-menu'
+  assign menu_list = linklists[menu]
+-%}
+
+<header class="site-header" data-section-id="{{ section.id }}" data-section-type="header">
+  <div class="header-wrapper">
+    <div class="container">
+      <div class="header-content">
+        <!-- Mobile Menu Button -->
+        <button type="button" 
+                class="mobile-menu-toggle" 
+                aria-controls="mobile-menu" 
+                aria-expanded="false">
+          <span class="hamburger">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </span>
+          <span class="visually-hidden">Toggle menu</span>
+        </button>
+
+        <!-- Logo -->
+        <div class="header-logo">
+          <a href="{{ routes.root_url }}" class="logo-link">
+            {% if section.settings.logo != blank %}
+              <img src="{{ section.settings.logo | img_url: '300x' }}" 
+                   alt="{{ shop.name }}" 
+                   class="logo-image"
+                   style="max-width: {{ section.settings.logo_max_width }}px;">
+            {% else %}
+              <span class="logo-text">{{ shop.name }}</span>
+            {% endif %}
+          </a>
+        </div>
+
+        <!-- Main Navigation -->
+        <nav class="main-navigation" aria-label="Main navigation">
+          <ul class="nav-list">
+            {% for link in menu_list.links %}
+              <li class="nav-item {% if link.child_active %}has-dropdown{% endif %}">
+                <a href="{{ link.url }}" 
+                   class="nav-link {% if link.active %}active{% endif %}"
+                   {% if link.child_active %}aria-expanded="false" aria-haspopup="true"{% endif %}>
+                  {{ link.title }}
+                  {% if link.links != blank %}
+                    <span class="dropdown-icon">{% render 'icon-chevron-down' %}</span>
+                  {% endif %}
+                </a>
+                
+                {% if link.links != blank %}
+                  <ul class="dropdown-menu">
+                    {% for child_link in link.links %}
+                      <li class="dropdown-item">
+                        <a href="{{ child_link.url }}" 
+                           class="dropdown-link {% if child_link.active %}active{% endif %}">
+                          <!-- Platform Icons -->
+                          {% if child_link.title contains 'Instagram' %}
+                            <span class="platform-icon instagram-icon">{% render 'icon-instagram' %}</span>
+                          {% elsif child_link.title contains 'TikTok' %}
+                            <span class="platform-icon tiktok-icon">{% render 'icon-tiktok' %}</span>
+                          {% elsif child_link.title contains 'YouTube' %}
+                            <span class="platform-icon youtube-icon">{% render 'icon-youtube' %}</span>
+                          {% endif %}
+                          
+                          <div class="dropdown-content">
+                            <span class="dropdown-title">{{ child_link.title }}</span>
+                            {% if child_link.title contains 'Followers' %}
+                              <span class="dropdown-price">Starting from $2.99</span>
+                            {% elsif child_link.title contains 'Likes' %}
+                              <span class="dropdown-price">Starting from $1.99</span>
+                            {% elsif child_link.title contains 'Views' %}
+                              <span class="dropdown-price">Starting from $1.49</span>
+                            {% elsif child_link.title contains 'Subscribers' %}
+                              <span class="dropdown-price">Starting from $4.99</span>
+                            {% endif %}
+                          </div>
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <!-- Language Selector -->
+          <div class="language-selector">
+            <button type="button" class="language-toggle">
+              🇺🇸 English ▼
+            </button>
+          </div>
+
+          <!-- Theme Toggle -->
+          <div class="theme-toggle">
+            <button type="button" class="theme-toggle-btn" aria-label="Toggle dark mode">
+              <span class="theme-icon sun-icon">☀️</span>
+              <span class="theme-icon moon-icon">🌙</span>
+            </button>
+          </div>
+
+          <!-- Cart -->
+          <div class="header-cart">
+            <a href="{{ routes.cart_url }}" class="cart-link" id="cart-icon-bubble">
+              <span class="cart-icon">
+                {% render 'icon-cart' %}
+              </span>
+              <span class="cart-count bubble" data-cart-count="{{ cart.item_count }}">
+                {{ cart.item_count }}
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-header">
+        <div class="mobile-logo">
+          {% if section.settings.logo != blank %}
+            <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name }}">
+          {% else %}
+            {{ shop.name }}
+          {% endif %}
+        </div>
+        <button type="button" class="mobile-menu-close">
+          <span class="close-icon">✕</span>
+        </button>
+      </div>
+      
+      <nav class="mobile-navigation">
+        <ul class="mobile-nav-list">
+          {% for link in menu_list.links %}
+            <li class="mobile-nav-item">
+              <a href="{{ link.url }}" class="mobile-nav-link">
+                {{ link.title }}
+              </a>
+              
+              {% if link.links != blank %}
+                <ul class="mobile-dropdown">
+                  {% for child_link in link.links %}
+                    <li class="mobile-dropdown-item">
+                      <a href="{{ child_link.url }}" class="mobile-dropdown-link">
+                        {{ child_link.title }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+      
+      <div class="mobile-menu-footer">
+        <div class="mobile-actions">
+          <div class="mobile-language">
+            🇺🇸 English ▼
+          </div>
+          <div class="mobile-theme">
+            <button type="button" class="mobile-theme-toggle">
+              🌙 Dark Mode
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+.site-header {
+  background: var(--color-background);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.header-wrapper {
+  padding: 0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  gap: 2rem;
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 101;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hamburger-line {
+  width: 20px;
+  height: 2px;
+  background: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+/* Logo */
+.header-logo {
+  flex-shrink: 0;
+}
+
+.logo-link {
+  display: block;
+  text-decoration: none;
+}
+
+.logo-image {
+  height: auto;
+  max-height: 60px;
+  width: auto;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+/* Main Navigation */
+.main-navigation {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--color-primary);
+  background: rgba(46, 204, 113, 0.1);
+}
+
+.dropdown-icon {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.3s ease;
+}
+
+.nav-item:hover .dropdown-icon {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-background);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  list-style: none;
+  margin: 0;
+  padding: 1rem 0;
+  min-width: 250px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.nav-item:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-item {
+  margin: 0;
+}
+
+.dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.dropdown-link:hover {
+  background: rgba(46, 204, 113, 0.1);
+  color: var(--color-primary);
+}
+
+.platform-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.instagram-icon {
+  color: #E4405F;
+}
+
+.tiktok-icon {
+  color: #25f4ee;
+}
+
+.youtube-icon {
+  color: #FF0000;
+}
+
+.dropdown-content {
+  flex: 1;
+}
+
+.dropdown-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.dropdown-price {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Header Actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.language-selector,
+.theme-toggle,
+.header-cart {
+  position: relative;
+}
+
+.language-toggle,
+.theme-toggle-btn {
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.language-toggle:hover,
+.theme-toggle-btn:hover {
+  background: rgba(0,0,0,0.1);
+}
+
+.theme-toggle-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.theme-icon {
+  position: absolute;
+  transition: all 0.3s ease;
+}
+
+.cart-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 50%;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.cart-link:hover {
+  background: rgba(46, 204, 113, 0.1);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.cart-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.cart-count:empty {
+  display: none;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 320px;
+  height: 100%;
+  background: var(--color-background);
+  padding: 2rem;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.mobile-menu.active .mobile-menu-content {
+  transform: translateX(0);
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.mobile-logo img {
+  max-height: 40px;
+  width: auto;
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.mobile-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-nav-item {
+  margin-bottom: 1rem;
+}
+
+.mobile-nav-link {
+  display: block;
+  padding: 1rem;
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.mobile-nav-link:hover {
+  background: rgba(46, 204, 113, 0.1);
+  color: var(--color-primary);
+}
+
+.mobile-dropdown {
+  list-style: none;
+  margin: 0.5rem 0 0 0;
+  padding: 0;
+}
+
+.mobile-dropdown-item {
+  margin-bottom: 0.5rem;
+}
+
+.mobile-dropdown-link {
+  display: block;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  text-decoration: none;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.mobile-dropdown-link:hover {
+  background: rgba(46, 204, 113, 0.1);
+  color: var(--color-primary);
+}
+
+.mobile-menu-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mobile-language,
+.mobile-theme-toggle {
+  padding: 1rem;
+  background: rgba(0,0,0,0.05);
+  border-radius: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-theme-toggle {
+  border: none;
+  background: rgba(0,0,0,0.05);
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.mobile-language:hover,
+.mobile-theme-toggle:hover {
+  background: rgba(46, 204, 113, 0.1);
+  color: var(--color-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  .main-navigation {
+    display: none;
+  }
+
+  .language-selector {
+    display: none;
+  }
+
+  .header-content {
+    padding: 0.75rem 0;
+  }
+
+  .logo-image {
+    max-height: 50px;
+  }
+}
+
+/* Sticky Header Effect */
+.site-header.scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .site-header {
+    background: var(--color-background);
+    border-bottom-color: rgba(255,255,255,0.1);
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Mobile menu functionality
+  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const mobileMenuClose = document.querySelector('.mobile-menu-close');
+  
+  function openMobileMenu() {
+    mobileMenu.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+  }
+  
+  if (mobileMenuClose) {
+    mobileMenuClose.addEventListener('click', closeMobileMenu);
+  }
+  
+  // Close mobile menu when clicking outside
+  mobileMenu?.addEventListener('click', function(e) {
+    if (e.target === mobileMenu) {
+      closeMobileMenu();
+    }
+  });
+  
+  // Theme toggle functionality
+  const themeToggle = document.querySelector('.theme-toggle-btn');
+  const mobileThemeToggle = document.querySelector('.mobile-theme-toggle');
+  
+  function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+  }
+  
+  themeToggle?.addEventListener('click', toggleTheme);
+  mobileThemeToggle?.addEventListener('click', toggleTheme);
+  
+  // Load saved theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+  }
+  
+  // Sticky header effect
+  let lastScrollY = window.scrollY;
+  const header = document.querySelector('.site-header');
+  
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 100) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+  
+  // Cart count update
+  function updateCartCount(count) {
+    const cartCountElements = document.querySelectorAll('[data-cart-count]');
+    cartCountElements.forEach(element => {
+      element.textContent = count;
+      element.setAttribute('data-cart-count', count);
+    });
+  }
+  
+  // Listen for cart updates
+  document.addEventListener('cart:updated', function(event) {
+    updateCartCount(event.detail.cart.item_count);
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Custom logo width",
+      "default": 200
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_header",
+      "label": "Enable sticky header",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
