@@ -1,0 +1,267 @@
+<div class="hero-section">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        {{ section.settings.hero_title | default: "Get real Arab Instagram followers in seconds!" }}
+        {% if section.settings.show_flag %}
+          <img src="{{ 'uae-flag.gif' | asset_url }}" alt="UAE Flag" class="hero-flag">
+        {% endif %}
+      </h1>
+      
+      {% if section.settings.hero_subtitle != blank %}
+        <p class="hero-subtitle">
+          {{ section.settings.hero_subtitle }}
+        </p>
+      {% endif %}
+      
+      {% if section.settings.hero_cta_text != blank %}
+        <div class="hero-cta">
+          <a href="{{ section.settings.hero_cta_link | default: '#' }}" class="btn btn--primary btn--large">
+            {{ section.settings.hero_cta_text }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+    
+    {% if section.settings.show_platforms %}
+      <div class="platform-showcase">
+        {% for block in section.blocks %}
+          <div class="platform-card" data-platform="{{ block.settings.platform }}">
+            <div class="platform-icon">
+              {% case block.settings.platform %}
+                {% when 'instagram' %}
+                  {% render 'icon-instagram' %}
+                {% when 'tiktok' %}
+                  {% render 'icon-tiktok' %}
+                {% when 'youtube' %}
+                  {% render 'icon-youtube' %}
+              {% endcase %}
+            </div>
+            <h3>{{ block.settings.platform | capitalize }}</h3>
+            <p>{{ block.settings.description }}</p>
+            <a href="{{ block.settings.link }}" class="btn btn--secondary">
+              View Services
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+.hero-section {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  opacity: 0.3;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.hero-flag {
+  width: 2rem;
+  height: auto;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  animation: wave 2s ease-in-out infinite;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.hero-cta {
+  margin-bottom: 3rem;
+}
+
+.platform-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.platform-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.platform-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.platform-icon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  color: white;
+}
+
+.platform-card h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.platform-card p {
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 0;
+  }
+  
+  .platform-showcase {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .platform-card {
+    padding: 1.5rem;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Hero Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Hero Title",
+      "default": "Get real Arab Instagram followers in seconds!"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_subtitle",
+      "label": "Hero Subtitle",
+      "default": "Top quality for UAE & Gulf market. Increase your credibility & boost the algorithm."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_flag",
+      "label": "Show UAE Flag",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_text",
+      "label": "CTA Button Text",
+      "default": "Get Started Now"
+    },
+    {
+      "type": "url",
+      "id": "hero_cta_link",
+      "label": "CTA Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_platforms",
+      "label": "Show Platform Cards",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "platform",
+      "name": "Platform",
+      "settings": [
+        {
+          "type": "select",
+          "id": "platform",
+          "label": "Platform",
+          "options": [
+            {"value": "instagram", "label": "Instagram"},
+            {"value": "tiktok", "label": "TikTok"},
+            {"value": "youtube", "label": "YouTube"}
+          ],
+          "default": "instagram"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "Followers, Likes, Views"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link to Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Section",
+      "blocks": [
+        {
+          "type": "platform",
+          "settings": {
+            "platform": "instagram",
+            "description": "Followers, Likes, Views"
+          }
+        },
+        {
+          "type": "platform",
+          "settings": {
+            "platform": "tiktok",
+            "description": "Followers, Likes, Views"
+          }
+        },
+        {
+          "type": "platform",
+          "settings": {
+            "platform": "youtube",
+            "description": "Subscribers, Likes, Views"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
